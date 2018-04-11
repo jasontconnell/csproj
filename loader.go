@@ -19,7 +19,8 @@ var projrefreg *regexp.Regexp = regexp.MustCompile(`(?is)<projectreference inclu
 var hpreg *regexp.Regexp = regexp.MustCompile("(?is).*?<hintpath>(.*)</hintpath>.*?")
 var pkgnamereg *regexp.Regexp = regexp.MustCompile(`(?is)..\\packages\\(.*?)\\.*`)
 var privreg *regexp.Regexp = regexp.MustCompile("(?is).*?<private>(.*)</private>.*?")
-var creg *regexp.Regexp = regexp.MustCompile(`(?is)<(none|compile|content) include="(.*?)" />`)
+var creg *regexp.Regexp = regexp.MustCompile(`(?is)<(none|compile|content) include="([a-z0-9\.\-\\ _]*?)" ?/>`)
+var c2reg *regexp.Regexp = regexp.MustCompile(`(?is)<(none|compile|content) include="([a-z0-9\.\-\\ _]*?)">.*?</(none|compile|content)>`) // do we care about subtype?
 var pkgreg *regexp.Regexp = regexp.MustCompile(`(?is).*?id="(.*?)" version="(.*?)" targetFramework="(.*?)"( developmentDependency="(.*?)")?.*?`)
 
 func GetRootNamespace(path string) (string, error) {
@@ -260,6 +261,15 @@ func loadFiles(contents []byte) []File {
     files := []File{}
 
     for _, m := range cmatches {
+        t := string(m[1])
+        f := string(m[2])
+
+        file := File{Type: t, Path: f}
+        files = append(files, file)
+    }
+
+    c2matches := c2reg.FindAllSubmatch(contents, -1)
+    for _, m := range c2matches {
         t := string(m[1])
         f := string(m[2])
 

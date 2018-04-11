@@ -36,6 +36,7 @@ type ProjectReference struct {
 type File struct {
     Path string
     Type string // Include, None, Compile, etc
+    SubType string
 }
 
 type Package struct {
