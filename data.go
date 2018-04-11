@@ -45,13 +45,3 @@ type Package struct {
     DevelopmentDependency bool
     VersionVal            int64
 }
-
-type PackageLockInfoPayload struct {
-    Locks []PackageLockInfo `json:"Packages"`
-}
-
-type PackageLockInfo struct {
-    Name    string
-    Version string
-    Locked  bool
-}
