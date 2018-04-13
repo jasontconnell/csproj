@@ -12,6 +12,7 @@ import (
 )
 
 var nsreg *regexp.Regexp = regexp.MustCompile(`(?is)<rootnamespace>(.*?)</rootnamespace>`)
+var frmwkreg *regexp.Regexp = regexp.MustCompile(`(?is)<targetframeworkversion>v(.*?)</targetframeworkversion>`)
 var prefreg *regexp.Regexp = regexp.MustCompile(`(?is)<reference include="([a-z0-9\., =\-]*?)">(.*?)</reference>`)
 var arefreg *regexp.Regexp = regexp.MustCompile(`(?is)<reference include="([a-z0-9\.]*?)" />`)
 var pkgrefreg *regexp.Regexp = regexp.MustCompile(`(?is)<packagereference include="([a-z0-9\.]*?)">.*?<version>(.*?)</version>.*?</packagereference>`)
@@ -39,6 +40,7 @@ func Load(path string) (Project, error) {
         return Project{}, err
     }
 
+    targetFramework := loadTargetFramework(contents)
     references, projrefs := loadReferences(contents)
     files := loadFiles(contents)
     pkgsconfig := loadPackages(path)
@@ -49,7 +51,7 @@ func Load(path string) (Project, error) {
 
     _, key := filepath.Split(filepath.Dir(filepath.Dir(dir)))
 
-    proj := Project{Key: key, RootNamespace: rootns, Filename: file, FullPath: path, References: references, ProjectRefs: projrefs, Files: files, Packages: pkgsconfig}
+    proj := Project{Key: key, RootNamespace: rootns, FrameworkVersion: targetFramework, Filename: file, FullPath: path, References: references, ProjectRefs: projrefs, Files: files, Packages: pkgsconfig}
 
     return proj, nil
 }
@@ -169,6 +171,16 @@ func loadPackages(path string) []Package {
 
     return packages
 }
+
+func loadTargetFramework(contents []byte) string {
+    tfmatches := frmwkreg.FindAllSubmatch(contents, 1)
+    var tf string
+    if len(tfmatches) > 0 {
+        tf = string(tfmatches[0][1])
+    }
+    return tf
+}
+
 
 func loadRootNS(contents []byte) string {
     nsmatches := nsreg.FindAllSubmatch(contents, 1)
