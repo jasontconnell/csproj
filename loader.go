@@ -14,7 +14,7 @@ import (
 var nsreg *regexp.Regexp = regexp.MustCompile(`(?is)<rootnamespace>(.*?)</rootnamespace>`)
 var prefreg *regexp.Regexp = regexp.MustCompile(`(?is)<reference include="([a-z0-9\., =\-]*?)">(.*?)</reference>`)
 var arefreg *regexp.Regexp = regexp.MustCompile(`(?is)<reference include="([a-z0-9\.]*?)" />`)
-var pkgrefreg *regexp.Regexp = regexp.MustCompile(`(?is)<packagereference include="([a-z0-9\.]*?)" version="(.*?)" />`)
+var pkgrefreg *regexp.Regexp = regexp.MustCompile(`(?is)<packagereference include="([a-z0-9\.]*?)">.*?<version>(.*?)</version>.*?</packagereference>`)
 var projrefreg *regexp.Regexp = regexp.MustCompile(`(?is)<projectreference include="(.*?)">.*<name>(.*?)</name>.*</projectreference>`)
 var hpreg *regexp.Regexp = regexp.MustCompile("(?is).*?<hintpath>(.*)</hintpath>.*?")
 var pkgnamereg *regexp.Regexp = regexp.MustCompile(`(?is)..\\packages\\(.*?)\\.*`)
