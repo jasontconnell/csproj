@@ -252,7 +252,7 @@ func loadReferences(contents []byte) ([]Reference, []ProjectReference) {
     for _, m := range pkgmatch {
         name := string(m[1])
         version := string(m[2])
-        ref := Reference{Name: name, Hint: "", FullRef: name, HasPrivate: false, Version: version, IsPackage: true}
+        ref := Reference{Name: name, Hint: "", FullRef: name, PackageName: name, HasPrivate: false, Version: version, IsPackage: true}
         refs = append(refs, ref)
     }
 
